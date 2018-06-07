@@ -1,4 +1,3 @@
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 const projectStyles = theme => ({
     root: {
