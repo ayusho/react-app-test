@@ -14,7 +14,7 @@ const columnData = [
     { id: 'launch', numeric: true, disablePadding: false, label: 'Launch' },
   ];
 
-class EnhancedTableHead extends React.Component {
+class ProjectsTableHead extends React.Component {
     createSortHandler = property => event => {
       this.props.onRequestSort(event, property);
     };
@@ -56,9 +56,9 @@ class EnhancedTableHead extends React.Component {
     }
   }
   
-  EnhancedTableHead.propTypes = {
+  ProjectsTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     rowCount: PropTypes.number.isRequired,
   };
 
-  export default EnhancedTableHead;
+  export default ProjectsTableHead;

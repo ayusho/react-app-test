@@ -9,18 +9,20 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import EnhancedTableHead from './EnhancedTableHead';
-import EnhancedTableToolbar from './EnhancedTableToolbar';
+import ProjectsTableHead from './ProjectsTableHead';
+import ProjectTableToolbar from './ProjectTableToolbar';
 
 import projectTableStyle from '../assets/jss/componentStyle/projectsTable.jsx';
+import Button from '@material-ui/core/Button/Button';
+import CreateProject from './modals/CreateProject';
 
 let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
+function createData(client, projectName, description, createdOn, launchLabel) {
   counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
+  return { id: counter, client, projectName, description, createdOn, launchLabel };
 }
 
-class EnhancedTable extends React.Component {
+class ProjectsTable extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,10 +30,10 @@ class EnhancedTable extends React.Component {
       selected: [],
       data: [
         createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
+        createData('Sopra Steria1', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
+        createData('Sopra Steria2', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
+        createData('Sopra Steria3', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
+        createData('Sopra Steria4', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
       ],
       page: 0,
       rowsPerPage: 5,
@@ -68,6 +70,10 @@ class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  launchBot = () => {
+    alert('opening botify');
+  };
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
@@ -77,10 +83,10 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <ProjectTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
+            <ProjectsTableHead
               numSelected={selected.length}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
@@ -103,12 +109,12 @@ class EnhancedTable extends React.Component {
                       <Checkbox checked={isSelected} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
-                      {n.name}
+                      {n.client}
                     </TableCell>
-                    <TableCell numeric>{n.calories}</TableCell>
-                    <TableCell numeric>{n.fat}</TableCell>
-                    <TableCell numeric>{n.carbs}</TableCell>
-                    <TableCell numeric>{n.protein}</TableCell>
+                    <TableCell numeric>{n.projectName}</TableCell>
+                    <TableCell numeric>{n.description}</TableCell>
+                    <TableCell numeric>{n.createdOn}</TableCell>
+                    <TableCell numeric><Button onClick= {this.launchBot}className={classes.button}>{n.launchLabel}</Button></TableCell>
                   </TableRow>
                 );
               })}
@@ -134,13 +140,15 @@ class EnhancedTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
+        
       </Paper>
+      
     );
   }
 }
 
-EnhancedTable.propTypes = {
+ProjectsTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(projectTableStyle)(EnhancedTable);
+export default withStyles(projectTableStyle)(ProjectsTable);

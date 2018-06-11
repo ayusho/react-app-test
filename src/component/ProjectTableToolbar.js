@@ -9,34 +9,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import purple from '@material-ui/core/colors/purple';
 
-const toolbarStyles = theme => ({
-    root: {
-      paddingRight: theme.spacing.unit,
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    spacer: {
-      flex: '1 1 100%',
-    },
-    actions: {
-      color: theme.palette.text.secondary,
-    },
-    title: {
-      flex: '0 0 auto',
-    },
-  });
+import toolbarStyles from '../assets/jss/componentStyle/projectTableToolbar';
+import CreateProject from './modals/CreateProject';
+import DeleteProject from './modals/DeleteProject';
+
+
   
-let EnhancedTableToolbar = props => {
+let ProjectTableToolbar = props => {
     const { numSelected, classes } = props;
     console.log(props.numSelected);
   
@@ -62,26 +42,26 @@ let EnhancedTableToolbar = props => {
           {numSelected === 1 ? (
             <Tooltip title="Delete">
               <IconButton aria-label="Delete">
-                <DeleteIcon />
+                <DeleteProject />
               </IconButton>
             </Tooltip>
-          ) : (
+          ) : (numSelected === 0) ? (
             <Tooltip title="Filter list">
               <IconButton aria-label="Filter list">
-                <AddIcon />
+              <CreateProject />
               </IconButton>
             </Tooltip>
-          )}
+          ) : console.log() }
         </div>
       </Toolbar>
     );
   };
   
-  EnhancedTableToolbar.propTypes = {
+  ProjectTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
   };
   
-  EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
+  ProjectTableToolbar = withStyles(toolbarStyles)(ProjectTableToolbar);
 
-  export default EnhancedTableToolbar;
+  export default ProjectTableToolbar;
