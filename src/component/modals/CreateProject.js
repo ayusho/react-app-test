@@ -12,6 +12,10 @@ import AddIcon from '@material-ui/icons/Add';
 export default class CreateProject extends React.Component {
   state = {
     open: false,
+    projectName: '',
+    displayName: '',
+    description: ''
+
   };
 
   handleClickOpen = () => {
@@ -21,6 +25,23 @@ export default class CreateProject extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
   };
+
+  createProject = (evt) => {
+    alert();
+    this.setState({
+      projectName : evt.target.value,
+      description: evt.target.value,
+      displayName: evt.target.value,
+    });
+    this.setState({ open: false });
+    this.props.updateProject(this.state);
+    return console.log(({projectName: this.state.projectName, description: this.state.description, displayName: this.state.displayName}))
+  }
+  handleChange = (evt) => {
+    this.setState({
+      [evt.target.name]: evt.target.value
+    })
+  }
 
   render() {
     return (
@@ -41,23 +62,30 @@ export default class CreateProject extends React.Component {
               margin="dense"
               id="project-name"
               label="Project name"
+              name="projectName"
               type="text"
+              value={this.state.projectName || ''}
+              onChange={evt => this.handleChange(evt)}
               fullWidth
             />
-                        <TextField
-              autoFocus
+            <TextField
               margin="dense"
               id="project-description"
               label="Description"
+              name="description"
               type="text"
+              value={this.state.description || ''}  
+              onChange={evt => this.handleChange(evt)}                                        
               fullWidth
             />
-                        <TextField
-              autoFocus
+            <TextField
               margin="dense"
               id="display-name"
               label="Display name"
               type="text"
+              name="displayName"
+              value={this.state.displayName || ''}     
+              onChange={evt => this.handleChange(evt)}                                     
               fullWidth
             />
           </DialogContent>
@@ -65,7 +93,7 @@ export default class CreateProject extends React.Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={((e) => this.createProject(e))} color="primary">
               CREATE
             </Button>
           </DialogActions>

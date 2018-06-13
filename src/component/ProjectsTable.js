@@ -14,32 +14,58 @@ import ProjectTableToolbar from './ProjectTableToolbar';
 
 import projectTableStyle from '../assets/jss/componentStyle/projectsTable.jsx';
 import Button from '@material-ui/core/Button/Button';
-import CreateProject from './modals/CreateProject';
 
 let counter = 0;
-function createData(client, projectName, description, createdOn, launchLabel) {
+function createData(projectName, description, createdOn, launchLabel) {
   counter += 1;
-  return { id: counter, client, projectName, description, createdOn, launchLabel };
+  return { id: counter, projectName, description, createdOn, launchLabel };
 }
 
 class ProjectsTable extends React.Component {
   constructor(props) {
     super(props);
-
+    this.updateProjectData = this.updateProjectData.bind(this);
     this.state = {
       selected: [],
-      data: [
-        createData('Sopra Steria', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria1', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria2', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria3', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-        createData('Sopra Steria4', 'Botify.kit', 'Botify is an app', '5th april 2018', 'Launch'),
-      ],
+      data: [],
       page: 0,
       rowsPerPage: 5,
+      isLoaded: false,
+      projectName: '',
+      description: '',
+      displayName: ''
     };
   }
 
+  updateProjectData = (project) => {
+    this.setState({
+      projectName : project.projectName,
+      description : project.description,
+      displayName : project.displayName
+    });
+
+  }
+  componentDidMount() {
+    fetch("http://localhost:4000/api/openshift/projects?token=Xx4riIMKN8IUauVi4MVjvioIcxa9HKe7LruMM3FDlUI&username=ayush")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            data: result.map(project => createData(project.project_name, project.project_description, project.creation_time,'Launch'))
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
 
   handleClick = (event, id) => {
 
@@ -70,8 +96,8 @@ class ProjectsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  launchBot = () => {
-    alert('opening botify');
+  launchBot = (e,name) => {
+    alert('opening botify ' + name.projectName);
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -80,10 +106,9 @@ class ProjectsTable extends React.Component {
     const { classes } = this.props;
     const { data, selected, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
     return (
       <Paper className={classes.root}>
-        <ProjectTableToolbar numSelected={selected.length} />
+        <ProjectTableToolbar numSelected={selected.length} updateProject={this.updateProjectData} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <ProjectsTableHead
@@ -93,6 +118,7 @@ class ProjectsTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
+              
               {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                 const isSelected = this.isSelected(n.id);
                 return (
@@ -108,13 +134,10 @@ class ProjectsTable extends React.Component {
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell component="th" scope="row" padding="none">
-                      {n.client}
-                    </TableCell>
                     <TableCell numeric>{n.projectName}</TableCell>
                     <TableCell numeric>{n.description}</TableCell>
                     <TableCell numeric>{n.createdOn}</TableCell>
-                    <TableCell numeric><Button onClick= {this.launchBot}className={classes.button}>{n.launchLabel}</Button></TableCell>
+                    <TableCell numeric><Button onClick= {((e)=> this.launchBot(e, n))}className={classes.button}>{n.launchLabel}</Button></TableCell>
                   </TableRow>
                 );
               })}

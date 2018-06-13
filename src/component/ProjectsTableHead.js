@@ -7,7 +7,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const columnData = [
-    { id: 'client', numeric: false, disablePadding: true, label: 'Client' },
     { id: 'projectname', numeric: true, disablePadding: false, label: 'Project name' },
     { id: 'description', numeric: true, disablePadding: false, label: 'Description' },
     { id: 'createdondate', numeric: true, disablePadding: false, label: 'Created' },
@@ -15,6 +14,7 @@ const columnData = [
   ];
 
 class ProjectsTableHead extends React.Component {
+
     createSortHandler = property => event => {
       this.props.onRequestSort(event, property);
     };
