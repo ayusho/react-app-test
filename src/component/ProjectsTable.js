@@ -38,15 +38,84 @@ class ProjectsTable extends React.Component {
   }
 
   updateProjectData = (project) => {
+    let newProjectData = {
+      project_name: project.projectName,
+      display_name: project.displayName,
+      project_description: project.description,
+      token:"imBO-CeRZmeX3Hd5RLyg6lHp8omco-9qLiqhLvqGy6c",
+      username:"ayojha"
+    }
+
+  this.postData('http://localhost:4000/api/openshift/project/create', 'POST', newProjectData)
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+    
+
     this.setState({
       projectName : project.projectName,
       description : project.description,
       displayName : project.displayName
     });
-
+    this.state.data.push(createData(project.projectName, project.description, 'aafda', 'Launch'));   
   }
+
+  deleteProjectData = (projectId, projectName) => {
+
+    this.state.selected = [];
+    var data = [...this.state.data];
+    try{
+    var projectToDelete = data.find(project => project.projectName == projectName).projectName;      
+    }
+    catch(error){
+      alert('Please type the correct project name');
+    }
+    if(projectToDelete === projectName){
+
+      var projectToDelete = {
+        project_name: projectName,
+        token: 'test-token'
+      }
+    this.postData('http://localhost:4000/api/openshift/project/delete', 'DELETE', projectToDelete)
+      .then(result => {
+        console.log(result);
+        this.setState({
+          data: data.filter(project => project.id != projectId)
+        });
+      })
+      .catch(error => console.error(error)); 
+    }
+    console.log(this.state.data);
+  }
+
+  postData = (url,method, data) =>  {
+    // Default options are marked with *
+    return fetch(url, {
+      body: JSON.stringify(data), // must match 'Content-Type' header
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, same-origin, *omit
+      headers: {
+        'content-type': 'application/json'
+      },
+      method: method, // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer', // *client, no-referrer
+    })
+    .then(response => response.json()) // parses response to JSON
+  }
+
+  getData = (url, data, callback) => {
+    return fetch(url)
+            .then(res => res.json())
+            .then(
+              (result) => { 
+                console.log(result);
+                callback(result.host);
+            })
+      }
+
   componentDidMount() {
-    fetch("http://localhost:4000/api/openshift/projects?token=Xx4riIMKN8IUauVi4MVjvioIcxa9HKe7LruMM3FDlUI&username=ayush")
+    fetch("http://localhost:4000/api/openshift/projects?token=imBO-CeRZmeX3Hd5RLyg6lHp8omco-9qLiqhLvqGy6c&username=ayush")
       .then(res => res.json())
       .then(
         (result) => {
@@ -65,7 +134,7 @@ class ProjectsTable extends React.Component {
           });
         }
       )
-  }
+}
 
   handleClick = (event, id) => {
 
@@ -97,7 +166,13 @@ class ProjectsTable extends React.Component {
   };
 
   launchBot = (e,name) => {
-    alert('opening botify ' + name.projectName);
+    fetch('http://localhost:4000/api/openshift/project/routes?token=imBO-CeRZmeX3Hd5RLyg6lHp8omco-9qLiqhLvqGy6c&project_name='+name.projectName)
+    .then(res => res.json())
+    .then(
+      (result) => { 
+        console.log(result);
+      window.open('https://'+ result.host, '_blank');
+    })
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -108,7 +183,7 @@ class ProjectsTable extends React.Component {
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     return (
       <Paper className={classes.root}>
-        <ProjectTableToolbar numSelected={selected.length} updateProject={this.updateProjectData} />
+        <ProjectTableToolbar numSelected={selected.length} triggerUpdateProject={this.updateProjectData} triggerDeleteProject={this.deleteProjectData} projectSelected={selected} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <ProjectsTableHead

@@ -13,7 +13,7 @@ import DeleteProject from './modals/DeleteProject';
 
   
 let ProjectTableToolbar = props => {
-    const { numSelected, classes } = props;
+    const { numSelected, classes, projectSelected } = props;
 
     return (
       <Toolbar
@@ -37,13 +37,13 @@ let ProjectTableToolbar = props => {
           {numSelected === 1 ? (
             <Tooltip title="Delete">
               <IconButton aria-label="Delete">
-                <DeleteProject />
+                <DeleteProject deleteProject= {props.triggerDeleteProject} projectSelectedForDelete={props.projectSelected} numSelected={numSelected}/>
               </IconButton>
             </Tooltip>
           ) : (numSelected === 0) ? (
             <Tooltip title="Filter list">
               <IconButton aria-label="Filter list">
-              <CreateProject updateProject={this.props.updateProjectData}/>
+              <CreateProject updateProject={props.triggerUpdateProject}/>
               </IconButton>
             </Tooltip>
           ) : console.log() }

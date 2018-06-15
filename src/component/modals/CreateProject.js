@@ -26,16 +26,14 @@ export default class CreateProject extends React.Component {
     this.setState({ open: false });
   };
 
-  createProject = (evt) => {
-    alert();
+  createProject = (newProject, evt) => {
     this.setState({
       projectName : evt.target.value,
       description: evt.target.value,
       displayName: evt.target.value,
     });
+    newProject.updateProject(this.state);
     this.setState({ open: false });
-    this.props.updateProject(this.state);
-    return console.log(({projectName: this.state.projectName, description: this.state.description, displayName: this.state.displayName}))
   }
   handleChange = (evt) => {
     this.setState({
@@ -93,7 +91,7 @@ export default class CreateProject extends React.Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={((e) => this.createProject(e))} color="primary">
+            <Button onClick={((e) => this.createProject(this.props, e))} color="primary">
               CREATE
             </Button>
           </DialogActions>

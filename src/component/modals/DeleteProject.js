@@ -12,6 +12,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 export default class DeleteProject extends React.Component {
   state = {
     open: false,
+    value: ''
   };
 
   handleClickOpen = () => {
@@ -21,6 +22,16 @@ export default class DeleteProject extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
   };
+
+  handleChange = (event) => {
+    this.setState({value: event.target.value});
+  };
+
+  deleteProject = (prop, e) => {
+    console.log(e.target);
+    prop.deleteProject(prop.projectSelectedForDelete, this.state.value);
+    this.setState({ open: false });
+  }
 
   render() {
     return (
@@ -42,6 +53,8 @@ export default class DeleteProject extends React.Component {
               id="name"
               label="Project name"
               type="text"
+              value={this.state.value || ''}
+              onChange={evt => this.handleChange(evt)}
               fullWidth
             />
 
@@ -51,7 +64,7 @@ export default class DeleteProject extends React.Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={((e) => this.deleteProject(this.props, e))} color="primary">
               DELETE
             </Button>
           </DialogActions>
